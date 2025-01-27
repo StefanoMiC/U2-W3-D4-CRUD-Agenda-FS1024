@@ -1,44 +1,97 @@
-fetch("https://striveschool-api.herokuapp.com/api/agenda/")
-  .then(resp => {
-    console.log(resp);
+// fetch("https://striveschool-api.herokuapp.com/api/agenda/")
+//   .then(resp => {
+//     console.log(resp);
 
-    if (resp.ok) {
-      // se saremo qui vuol dire che avremo ricevuto uno status da 100 a 299 (quindi positivo e possiamo procedere)
-      return resp.json();
-    } else {
-      // questa operazione ci fa saltare il prossimo then (evitando errori su operazioni impossibili)
-      // ci farà saltare direttamente al catch
+//     if (resp.ok) {
+//       // se saremo qui vuol dire che avremo ricevuto uno status da 100 a 299 (quindi positivo e possiamo procedere)
+//       return resp.json();
+//     } else {
+//       // questa operazione ci fa saltare il prossimo then (evitando errori su operazioni impossibili)
+//       // ci farà saltare direttamente al catch
+//       throw new Error("Ci dispiace ma non siamo riusciti a reperire il dato");
+//     }
+//   })
+//   .then(appointments => {
+//     // isLoading(false);
+//     console.log(appointments);
+
+//     const row = document.getElementById("appointments-list");
+
+//     appointments.forEach(app => {
+//       console.log(app);
+
+//       const li = document.createElement("li");
+//       li.classList.add("list-group-item", "d-flex", "align-items-center");
+//       // alla fine di questa stringa stiamo determinando la creazione di un link DINAMICO che avrà dentro di sé l'informazione dell'id specifico da portare e rendere disponibile nella pagina dettaglio
+//       li.innerHTML = `<span class="me-auto">${app.name}</span> <span class="badge text-bg-dark me-2">${app.price}€</span><a href="./details.html?appId=${app._id}">VAI A DETTAGLIO</a>`;
+
+//       row.appendChild(li);
+//     });
+//   })
+//   .catch(err => {
+//     console.dir(err);
+//     // isLoading(false);
+
+//     generateAlert(err.message);
+//   })
+//   .finally(() => {
+//     // chiamare isLoading qui equivale a farlo sia in caso di esito positivo che di esito negativo,
+//     // perché il metodo finally si attiva in ogni caso a prescindere da tutto
+//     isLoading(false);
+//   });
+
+// const getAndDisplayAppointments = async () => {
+//   try {
+//     const response = await fetch("https://striveschool-api.herokuapp.com/api/ageda/");
+//     console.log(response);
+
+//     if (!response.ok) {
+//       throw new Error("Ci dispiace ma non siamo riusciti a reperire il dato");
+//     }
+
+//     const appointments = await response.json();
+//     // isLoading(false);
+//     console.log(appointments);
+
+//     const row = document.getElementById("appointments-list");
+
+//     appointments.forEach(app => {
+//       console.log(app);
+
+//       const li = document.createElement("li");
+//       li.classList.add("list-group-item", "d-flex", "align-items-center");
+//       // alla fine di questa stringa stiamo determinando la creazione di un link DINAMICO che avrà dentro di sé l'informazione dell'id specifico da portare e rendere disponibile nella pagina dettaglio
+//       li.innerHTML = `<span class="me-auto">${app.name}</span> <span class="badge text-bg-dark me-2">${app.price}€</span><a href="./details.html?appId=${app._id}">VAI A DETTAGLIO</a>`;
+
+//       row.appendChild(li);
+//     });
+//   } catch (err) {
+//     // isLoading(false);
+//     generateAlert(err.message);
+//   } finally {
+//     isLoading(false);
+//   }
+// };
+
+const getAppointments = async () => {
+  try {
+    const response = await fetch("https://striveschool-api.herokuapp.com/api/agenda/");
+    console.log(response);
+
+    if (!response.ok) {
       throw new Error("Ci dispiace ma non siamo riusciti a reperire il dato");
     }
-  })
-  .then(appointments => {
+
+    const appointments = await response.json();
     // isLoading(false);
-    console.log(appointments);
-
-    const row = document.getElementById("appointments-list");
-
-    appointments.forEach(app => {
-      console.log(app);
-
-      const li = document.createElement("li");
-      li.classList.add("list-group-item", "d-flex", "align-items-center");
-      // alla fine di questa stringa stiamo determinando la creazione di un link DINAMICO che avrà dentro di sé l'informazione dell'id specifico da portare e rendere disponibile nella pagina dettaglio
-      li.innerHTML = `<span class="me-auto">${app.name}</span> <span class="badge text-bg-dark me-2">${app.price}€</span><a href="./details.html?appId=${app._id}">VAI A DETTAGLIO</a>`;
-
-      row.appendChild(li);
-    });
-  })
-  .catch(err => {
-    console.dir(err);
+    return appointments;
+  } catch (err) {
     // isLoading(false);
-
     generateAlert(err.message);
-  })
-  .finally(() => {
-    // chiamare isLoading qui equivale a farlo sia in caso di esito positivo che di esito negativo,
-    // perché il metodo finally si attiva in ogni caso a prescindere da tutto
+  } finally {
     isLoading(false);
-  });
+  }
+};
 
 const isLoading = function (loadingState) {
   const spinner = document.querySelector(".spinner-border"); // riferimento dell'elemento spinner
@@ -57,4 +110,37 @@ const generateAlert = function (message) {
   alertContainer.innerHTML = `<div class="alert alert-danger" role="alert">
                                 ${message}
                               </div>`;
+};
+
+const displayAppointments = appointments => {
+  console.log(appointments);
+
+  const row = document.getElementById("appointments-list");
+
+  appointments.forEach(app => {
+    console.log(app);
+
+    const li = document.createElement("li");
+    li.classList.add("list-group-item", "d-flex", "align-items-center");
+    // alla fine di questa stringa stiamo determinando la creazione di un link DINAMICO che avrà dentro di sé l'informazione dell'id specifico da portare e rendere disponibile nella pagina dettaglio
+    li.innerHTML = `<span class="me-auto">${app.name}</span> <span class="badge text-bg-dark me-2">${app.price}€</span><a href="./details.html?appId=${app._id}">VAI A DETTAGLIO</a>`;
+
+    row.appendChild(li);
+  });
+};
+
+window.onload = () => {
+  // getAndDisplayAppointments();
+  getAppointments()
+    .then(appointments => displayAppointments(appointments))
+    .catch(err => console.log(err));
+};
+
+window.onload = async () => {
+  try {
+    const appointments = await getAppointments();
+    displayAppointments(appointments);
+  } catch (err) {
+    console.log(err);
+  }
 };
